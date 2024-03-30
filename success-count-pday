@@ -1,0 +1,6 @@
+StorageBlobLogs
+| where RequesterObjectId == "xxxxxx-ac9f-475a-bbb7-fb0ff0445827"
+| where StatusText == "Success" and ObjectKey startswith_cs "/{storageAccountnName}/{filesystemName}"
+| where TimeGenerated >= ago(14d)
+| summarize SuccessCount = count() by bin(TimeGenerated, 1d)
+| order by TimeGenerated desc
