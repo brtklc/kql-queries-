@@ -1,0 +1,9 @@
+StorageBlobLogs
+| where RequesterObjectId == "xxxxxx-ac9f-475a-bbb7-fb0ff0445827" // adfDisplayName
+| where StatusText == "Success" // only Success operations
+| where TimeGenerated >= ago(5d) // last for 5 days
+| extend ObjectKeySegments = split(ObjectKey, '/')
+| where array_length(ObjectKeySegments) >= 3
+| extend FileSystem = strcat(ObjectKeySegments[0], '/', ObjectKeySegments[1], '/', ObjectKeySegments[2])
+| summarize SuccessCount = count() by bin(TimeGenerated, 1d), FileSystem
+| order by TimeGenerated desc
